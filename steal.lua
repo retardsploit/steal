@@ -1,4 +1,3 @@
--- Full revised script with cyberpunk 2099-inspired GUI design
 -- Load Infinite Yield (unchanged)
 loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
 
@@ -403,7 +402,7 @@ local function findRareMeshesInRig(rig)
 end
 
 -- ====================
--- CYBERPUNK GUI Setup
+-- GUI Setup
 -- ====================
 local gui = Instance.new("ScreenGui")
 gui.Name = "BaseFinderGUI"
@@ -411,7 +410,7 @@ gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
 gui.Parent = game.CoreGui
 
--- Create cyberpunk texture background
+-- Texture background
 local function createCyberpunkTexture()
     local texture = Instance.new("Frame")
     texture.Name = "CyberpunkTexture"
@@ -502,7 +501,7 @@ local title = Instance.new("TextLabel", header)
 title.Size = UDim2.new(0.7, -16, 1, -8)
 title.Position = UDim2.new(0, 12, 0, 4)
 title.BackgroundTransparency = 1
-title.Text = "SYSTEM_INTRUSION // v2.0.99"
+title.Text = "B####, F####, STEAL! // v2.0.99"
 title.TextColor3 = Color3.fromRGB(255, 50, 50)
 title.Font = Enum.Font.Code
 title.TextSize = 16
@@ -614,7 +613,7 @@ end
 -- Create Toggle Rows
 -- ====================
 -- Auto Relock Toggle
-local autoRelockRow, autoRelockToggle, autoRelockKnob = createCyberpunkToggle("AUTO RELOCK PROTOCOL", false, 1)
+local autoRelockRow, autoRelockToggle, autoRelockKnob = createCyberpunkToggle("AUTO RELOCK SYSTEM", false, 1)
 
 -- Expand Steal Zone Toggle  
 local expandStealRow, expandStealToggle, expandStealKnob = createCyberpunkToggle("EXPAND STEAL ZONE", false, 2)
@@ -644,7 +643,7 @@ thresholdRow.BackgroundTransparency = 1
 local threshLabel = Instance.new("TextLabel", thresholdRow)
 threshLabel.Size = UDim2.new(0.6, 0, 1, 0)
 threshLabel.BackgroundTransparency = 1
-threshLabel.Text = "> POWER THRESHOLD"
+threshLabel.Text = "> MINIMUM POWER THRESHOLD"
 threshLabel.TextColor3 = Color3.fromRGB(220, 220, 255)
 threshLabel.Font = Enum.Font.Code
 threshLabel.TextSize = 14
@@ -688,7 +687,7 @@ applyStroke.Color = Color3.fromRGB(255, 100, 100)
 createSeparator(6)
 
 -- Action buttons
-local btnHighlight = makeCyberpunkButton("NO COOLDOWN STEAL", 7)
+local btnHighlight = makeCyberpunkButton("INSTANT STEAL (> THRESHOLD ONLY)", 7)
 
 -- Separator
 createSeparator(8)
@@ -1522,5 +1521,5 @@ root.Active = true
 root.Draggable = true
 
 -- Final helpful print
-print("[BaseFinder] Cyberpunk interface loaded. SYSTEM ONLINE.")
+print("[BaseFinder] INTERFACE LOADING COMPLETE. SYSTEM ONLINE.")
 showToast("SYSTEM_INTRUSION // ONLINE", 2)
